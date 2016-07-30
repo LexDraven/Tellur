@@ -233,4 +233,21 @@ public class Tellur {
             webDriver.quit();
         }
     }
+
+    public WebElement getElementByWordInClassName(String word){
+        return webDriver.findElement(By.xpath("//*[contains(@class,'"+word+"')]"));
+    }
+
+    public WebElement getElementByTagAndWordInClassName(String tag, String word){
+        return webDriver.findElement(By.xpath("//"+tag+"[contains(@class,'"+word+"')]"));
+    }
+
+    public WebElement getElementByText(String text) {
+        return webDriver.findElement(By.xpath("//*[contains(text(),'"+text+"')]"));
+    }
+
+    public WebElement getElementByTagAndText(String tag, String text) {
+        return webDriver.findElement(By.xpath("//"+tag+"[contains(text(),'"+text+"')]"));
+    }
+
 }
