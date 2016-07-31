@@ -16,13 +16,24 @@ public class Tellur {
     private WebDriver webDriver;
     private int timeToWait = 3; //время ожиданий
     private String mainHandle;
+    private OwnExceptionHandler exceptionHandler;
 
     public Tellur(WebDriver webDriver) {
         this.webDriver = webDriver;
+        exceptionHandler = new OwnExceptionHandler(webDriver, true, false);
+        Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
     }
 
     public void setTimeToWait(int timeToWait) {
         this.timeToWait = timeToWait;
+    }
+
+    public void changeScreenshotFolder(String newFolder){
+        exceptionHandler.setUserDir(newFolder);
+    }
+
+    public void makeScreenshot(String name) {
+        exceptionHandler.getScreenShot(name);
     }
 
     public void goToPage(String name) {
