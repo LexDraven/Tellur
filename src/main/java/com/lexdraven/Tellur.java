@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Tellur {
     private EventFiringWebDriver webDriver;
-    private int timeToWait = 3; //время ожиданий
+    private int timeToWait = 3;
     private String mainHandle;
     private OwnExceptionHandler exceptionHandler;
     private ScreenShooter shooter;
@@ -52,13 +52,21 @@ public class Tellur {
         webDriver.get(name);
     }
 
+    public String getCurrentUrl() {
+        return webDriver.getCurrentUrl();
+    }
+
+    public boolean isPageURLContains(String text) {
+        return getCurrentUrl().contains(text);
+    }
+
     public WebElement getElement(By locator) {
         return webDriver.findElement(locator);
     }
 
     public boolean isElementPresent(By locator) { //проверка наличия элемента быстрый и без исключений
         webDriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS); //ставим 0 для быстроты поиска
-        List<WebElement> allElementsByLocator = webDriver.findElements(locator);
+        List<WebElement> allElementsByLocator = getListByLocator(locator);
         webDriver.manage().timeouts().implicitlyWait(timeToWait, TimeUnit.SECONDS); //возвращаем нужное время
         return allElementsByLocator.size() > 0;
     }
@@ -222,10 +230,6 @@ public class Tellur {
         }
     }
 
-    public boolean isPageURLContains(String text) {
-        return webDriver.getCurrentUrl().contains(text);
-    }
-
     public List<WebElement> getListByLocator(By locator) {
         return webDriver.findElements(locator);
     }
@@ -324,7 +328,5 @@ public class Tellur {
         }
         alert = null;
     }
-
-
 
 }
