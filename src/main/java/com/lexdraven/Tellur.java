@@ -1,5 +1,6 @@
 package com.lexdraven;
 
+import com.lexdraven.services.BrowserDriverKeeper;
 import com.lexdraven.services.OwnExceptionHandler;
 import com.lexdraven.services.ScreenShooter;
 import com.lexdraven.services.WebEventListener;
@@ -22,8 +23,23 @@ public class Tellur {
     private ScreenShooter shooter;
     private WebEventListener listener;
     private Alert alert;
+    private BrowserDriverKeeper keeper = new BrowserDriverKeeper();
 
     public Tellur(WebDriver driver) {
+        init(driver);
+    }
+
+    public Tellur() {
+        WebDriver  driver = keeper.getDriver(Thread.currentThread().getName(),"firefox");
+        init(driver);
+    }
+
+    public Tellur(String browserType) {
+        WebDriver  driver = keeper.getDriver(Thread.currentThread().getName(),browserType);
+        init(driver);
+    }
+
+    private void init(WebDriver driver){
         this.webDriver = new EventFiringWebDriver(driver);
         listener = new WebEventListener(false);
         shooter = new ScreenShooter(webDriver,System.getProperty("user.dir")+"/Screenshots/");

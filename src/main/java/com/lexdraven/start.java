@@ -15,7 +15,6 @@ public class start {
         }
         tellur.setOwnUnhandledExceptionHandler();
         tellur.clickElement(By.id("error"));//error occurred
-        throwError();
         tellur.quit();
     }
 
