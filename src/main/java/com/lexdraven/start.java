@@ -13,8 +13,14 @@ public class start {
         if (tellur.isJQueryOnThisPage()) {
             tellur.waitForJQueryEnds();
         }
+        tellur.setOwnUnhandledExceptionHandler();
         tellur.clickElement(By.id("error"));//error occurred
+        throwError();
         tellur.quit();
+    }
+
+    private static void throwError(){
+        throw new IndexOutOfBoundsException("wassa");
     }
 }
 

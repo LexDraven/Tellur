@@ -1,12 +1,6 @@
-package com.lexdraven;
+package com.lexdraven.services;
 
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-
-import java.io.File;
-import java.io.IOException;
 
 public class OwnExceptionHandler  implements Thread.UncaughtExceptionHandler{
     private boolean isStackTraceNeeded=false;
@@ -14,12 +8,14 @@ public class OwnExceptionHandler  implements Thread.UncaughtExceptionHandler{
     private boolean isScreenshotNeeded=true;
     private String userDir;
     private WebDriver driver;
+    private ScreenShooter shooter;
 
     public OwnExceptionHandler(WebDriver driver, boolean isStackTraceNeeded, boolean isLogNeeded) {
         this.isStackTraceNeeded = isStackTraceNeeded;
         this.isLogNeeded = isLogNeeded;
         this.driver = driver;
         userDir = System.getProperty("user.dir")+"/Screenshots/";
+        shooter = new ScreenShooter(driver,userDir);
     }
 
     public void setStackTraceNeeded(boolean stackTraceNeeded) {
@@ -39,11 +35,11 @@ public class OwnExceptionHandler  implements Thread.UncaughtExceptionHandler{
     }
 
     public void uncaughtException(Thread t, Throwable e) {
-        String errorMessage = e.getLocalizedMessage();
+        String errorMessage = e.getMessage();
         String errorClass = e.getClass().getName();
         if (isScreenshotNeeded) {
             String errorType = errorClass.substring(errorClass.lastIndexOf(".")+1);
-            getScreenShot(errorType);
+            shooter.getScreenShot(errorType);
         }
         if (!isLogNeeded) {
             System.err.println("Error occured in "+t+" - "+errorMessage);
@@ -53,17 +49,6 @@ public class OwnExceptionHandler  implements Thread.UncaughtExceptionHandler{
         }
         else {
             //TODO write to logs
-        }
-    }
-
-    public void getScreenShot(String problem) {
-        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String fileName = userDir + "scr_" + "_" + problem + ".png";
-        try {
-            FileUtils.copyFile(scrFile, new File(fileName));
-        } catch (IOException e) {
-            System.out.println("Error making screenshot:" + fileName + " Error-" + e.getMessage());
-            e.printStackTrace();
         }
     }
 

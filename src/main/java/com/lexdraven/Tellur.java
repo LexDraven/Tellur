@@ -1,7 +1,11 @@
 package com.lexdraven;
 
+import com.lexdraven.services.OwnExceptionHandler;
+import com.lexdraven.services.ScreenShooter;
+import com.lexdraven.services.WebEventListener;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -9,23 +13,31 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Лекс on 24.07.2016.
- */
+
 public class Tellur {
-    private WebDriver webDriver;
+    private EventFiringWebDriver webDriver;
     private int timeToWait = 3; //время ожиданий
     private String mainHandle;
     private OwnExceptionHandler exceptionHandler;
+    private ScreenShooter shooter;
+    private WebEventListener listener;
+    private Alert alert;
 
-    public Tellur(WebDriver webDriver) {
-        this.webDriver = webDriver;
-        exceptionHandler = new OwnExceptionHandler(webDriver, true, false);
-        Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
+    public Tellur(WebDriver driver) {
+        this.webDriver = new EventFiringWebDriver(driver);
+        listener = new WebEventListener(false);
+        shooter = new ScreenShooter(webDriver,System.getProperty("user.dir")+"/Screenshots/");
+        webDriver.register(listener);
+        listener.setShooter(shooter);
     }
 
     public void setTimeToWait(int timeToWait) {
         this.timeToWait = timeToWait;
+    }
+
+    public void setOwnUnhandledExceptionHandler(){
+        exceptionHandler = new OwnExceptionHandler(webDriver, true, false);
+        Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
     }
 
     public void changeScreenshotFolder(String newFolder){
@@ -33,7 +45,7 @@ public class Tellur {
     }
 
     public void makeScreenshot(String name) {
-        exceptionHandler.getScreenShot(name);
+        shooter.getScreenShot(name);
     }
 
     public void goToPage(String name) {
@@ -52,7 +64,14 @@ public class Tellur {
     }
 
     public boolean typeTextToInput(By locator, String text) {
-        return typeTextToInput(webDriver.findElement(locator), text);
+        try {
+            WebElement webElement = getElement(locator);
+            webElement.clear();
+            webElement.sendKeys(text);
+        } catch (WebDriverException e) {
+            return false;
+        }
+        return true;
     }
 
     public boolean typeTextToInput(WebElement webElement, String text) {
@@ -66,7 +85,12 @@ public class Tellur {
     }
 
     public boolean clickElement(By locator) {
-        return clickElement(webDriver.findElement(locator));
+        try {
+            getElement(locator).click();
+        } catch (WebDriverException e) {
+            return false;
+        }
+        return true;
     }
 
     public boolean clickElement(WebElement webElement) {
@@ -246,19 +270,61 @@ public class Tellur {
     }
 
     public WebElement getElementByWordInClassName(String word){
-        return webDriver.findElement(By.xpath("//*[contains(@class,'"+word+"')]"));
+        return getElement(By.xpath("//*[contains(@class,'"+word+"')]"));
     }
 
     public WebElement getElementByTagAndWordInClassName(String tag, String word){
-        return webDriver.findElement(By.xpath("//"+tag+"[contains(@class,'"+word+"')]"));
+        return getElement(By.xpath("//"+tag+"[contains(@class,'"+word+"')]"));
     }
 
     public WebElement getElementByText(String text) {
-        return webDriver.findElement(By.xpath("//*[contains(text(),'"+text+"')]"));
+        return getElement(By.xpath("//*[contains(text(),'"+text+"')]"));
     }
 
     public WebElement getElementByTagAndText(String tag, String text) {
-        return webDriver.findElement(By.xpath("//"+tag+"[contains(text(),'"+text+"')]"));
+        return getElement(By.xpath("//"+tag+"[contains(text(),'"+text+"')]"));
     }
+
+    public boolean isAlertPresent() { //проверка на наличие всплывающих окон
+        try {
+            alert = webDriver.switchTo().alert();
+        } catch (NoAlertPresentException ex) {
+            alert = null;
+            return false;
+        }
+        return true;
+    }
+
+    public void acceptAllAlerts() { //говорим да всем всплывающим предупреждениям
+        while (isAlertPresent()) {
+            alert.accept();
+        }
+    }
+
+    public void acceptAlert(){
+        if (alert!=null) {
+            alert.accept();
+        }
+        else {
+            if (isAlertPresent()) {
+                alert.accept();
+            }
+        }
+        alert = null;
+    }
+
+    public void declineAlert(){
+        if (alert!=null) {
+            alert.dismiss();
+        }
+        else {
+            if (isAlertPresent()) {
+                alert.dismiss();
+            }
+        }
+        alert = null;
+    }
+
+
 
 }
