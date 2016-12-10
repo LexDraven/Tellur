@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Tellur {
     private EventFiringWebDriver webDriver;
+    private boolean consoleErrorOut=true;
     private int timeToWait = 3;
     private String mainHandle;
     private OwnExceptionHandler exceptionHandler;
@@ -24,10 +25,6 @@ public class Tellur {
     private WebEventListener listener;
     private Alert alert;
     private BrowserDriverKeeper keeper = new BrowserDriverKeeper();
-
-    public Tellur(WebDriver driver) {
-        init(driver);
-    }
 
     public Tellur() {
         WebDriver  driver = keeper.getDriver(Thread.currentThread().getName(),"firefox");
@@ -47,6 +44,10 @@ public class Tellur {
         listener.setShooter(shooter);
     }
 
+    public void setConsoleErrorOut(boolean consoleErrorOut) {
+        this.consoleErrorOut = consoleErrorOut;
+    }
+
     public void setTimeToWait(int timeToWait) {
         this.timeToWait = timeToWait;
     }
@@ -54,6 +55,13 @@ public class Tellur {
     public void setOwnUnhandledExceptionHandler(){
         exceptionHandler = new OwnExceptionHandler(webDriver, true, false);
         Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
+    }
+
+    private void print(Exception e){
+        if (consoleErrorOut){
+            String [] tokens = e.getMessage().split("\n");
+            System.out.println("Error: "+tokens[0]);
+        }
     }
 
     public void changeScreenshotFolder(String newFolder){
@@ -93,6 +101,7 @@ public class Tellur {
             webElement.clear();
             webElement.sendKeys(text);
         } catch (WebDriverException e) {
+            print(e);
             return false;
         }
         return true;
@@ -103,6 +112,7 @@ public class Tellur {
             webElement.clear();
             webElement.sendKeys(text);
         } catch (WebDriverException e) {
+            print(e);
             return false;
         }
         return true;
@@ -112,6 +122,7 @@ public class Tellur {
         try {
             getElement(locator).click();
         } catch (WebDriverException e) {
+            print(e);
             return false;
         }
         return true;
@@ -121,6 +132,7 @@ public class Tellur {
         try {
             webElement.click();
         } catch (WebDriverException e) {
+            print(e);
             return false;
         }
         return true;
@@ -268,6 +280,7 @@ public class Tellur {
             }
             action.build().perform();
         } catch (WebDriverException e) {
+            print(e);
             return false;
         }
         return true;
