@@ -19,14 +19,11 @@ public class ScreenShooter {
         this.folder = folder;
     }
 
-    public void getScreenShot(String problem) {
-        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String fileName = folder + "scr_" + "_" +getCurrentDateTime()+"_"+problem + ".png";
-        try {
+    public void getScreenShot(String problem) throws IOException{
+        if (isDriverAlive(driver)) {
+            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            String fileName = folder + "scr_" + "_" + getCurrentDateTime() + "_" + problem + ".png";
             FileUtils.copyFile(scrFile, new File(fileName));
-        } catch (IOException e) {
-            System.out.println("Error making screenshot:" + fileName + " Error-" + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -34,5 +31,15 @@ public class ScreenShooter {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("hhmm_dd-MM-yyyy");
         return format.format(date);
+    }
+
+    private boolean isDriverAlive(WebDriver newDriver) {
+        try {
+            newDriver.getTitle();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Driver is not respond! " + e.getMessage());
+            return false;
+        }
     }
 }

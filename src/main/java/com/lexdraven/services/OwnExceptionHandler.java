@@ -37,10 +37,6 @@ public class OwnExceptionHandler  implements Thread.UncaughtExceptionHandler{
     public void uncaughtException(Thread t, Throwable e) {
         String errorMessage = e.getMessage();
         String errorClass = e.getClass().getName();
-        if (isScreenshotNeeded) {
-            String errorType = errorClass.substring(errorClass.lastIndexOf(".")+1);
-            shooter.getScreenShot(errorType);
-        }
         if (!isLogNeeded) {
             System.err.println("Error occured in "+t+" - "+errorMessage);
             if (isStackTraceNeeded) {

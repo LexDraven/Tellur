@@ -3,6 +3,8 @@ package com.lexdraven.services;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
 
+import java.io.IOException;
+
 public class WebEventListener extends AbstractWebDriverEventListener {
     private ScreenShooter shooter;
     private boolean needToConsole;
@@ -24,7 +26,11 @@ public class WebEventListener extends AbstractWebDriverEventListener {
         String errorMessage = throwable.getMessage();
         String errorClass = throwable.getClass().getName();
         String errorType = errorClass.substring(errorClass.lastIndexOf(".")+1);
-        shooter.getScreenShot(errorType);
+        try {
+            shooter.getScreenShot(errorType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (needToConsole) {
             System.out.println(errorMessage);
         }

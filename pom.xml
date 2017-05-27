@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>3.0.0</version>
+            <version>3.4.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -32,9 +32,9 @@
             <version>2.4</version>
         </dependency>
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-htmlunit-driver</artifactId>
-            <version>2.52.0</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.11</version>
         </dependency>
     </dependencies>
 

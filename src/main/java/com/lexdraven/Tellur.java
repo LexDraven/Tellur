@@ -10,6 +10,7 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -69,7 +70,11 @@ public class Tellur {
     }
 
     public void makeScreenshot(String name) {
-        shooter.getScreenShot(name);
+        try {
+            shooter.getScreenShot(name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void goToPage(String name) {
