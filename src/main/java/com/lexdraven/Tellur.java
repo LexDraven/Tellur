@@ -307,6 +307,11 @@ public class Tellur {
         }
     }
 
+    protected void clearCookiesAndRefresh() {
+        webDriver.manage().deleteAllCookies();
+        webDriver.navigate().refresh();
+    }
+
     public WebElement getElementByWordInClassName(String word){
         return getElement(By.xpath("//*[contains(@class,'"+word+"')]"));
     }
