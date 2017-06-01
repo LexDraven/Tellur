@@ -7,6 +7,7 @@ import com.lexdraven.services.WebEventListener;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -366,6 +367,16 @@ public class Tellur {
             }
         }
         alert = null;
+    }
+
+    public boolean waitForPageToLoad(int timeInSeconds) {
+        WebDriverWait wait = new WebDriverWait(webDriver,timeInSeconds);
+        try {
+            wait.until((ExpectedCondition<Boolean>) driver -> ((JavascriptExecutor)driver).executeScript("return document.readyState").equals("complete"));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 
 }
