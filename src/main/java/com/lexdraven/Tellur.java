@@ -7,7 +7,6 @@ import com.lexdraven.services.WebEventListener;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -145,29 +144,16 @@ public class Tellur {
     }
 
     public boolean waitUntilOneWindowStay(int time) {
-        boolean flag = false;
         while (time * 4 > 0) {
-            Set<String> allWindowHandles = webDriver.getWindowHandles();
-            if (allWindowHandles.size() <= 1) {
-                flag = true;
-                break;
+            if (webDriver.getWindowHandles().size()<=1) {
+                return true;
             }
             time--;
             pause();
         }
-        return flag;
+        return false;
     }
-
-    public boolean waitUntilPageTitle(String title, int time) {
-        WebDriverWait wait = new WebDriverWait(webDriver, time);
-        try {
-            wait.until(ExpectedConditions.titleIs(title));
-        } catch (TimeoutException e) {
-            return false;
-        }
-        return true;
-    }
-
+//TODO
     public boolean waitUntilExist(By locator, int time) { //ожидание появления всех элементов класса
         return waitUntilConditions(locator, time, 0);
     }
@@ -292,16 +278,6 @@ public class Tellur {
         return true;
     }
 
-    public void waitForJQueryEnds() {
-        while ((Boolean) ((JavascriptExecutor) webDriver).executeScript("return jQuery.active!=0")) {
-              //empty body or you can do something while waiting
-        }
-    }
-
-    public boolean isJQueryOnThisPage() {
-        return ((JavascriptExecutor) webDriver).executeScript("return (window.jQuery)") != null;
-    }
-
     public void quit() {
         if (webDriver != null) {
             webDriver.quit();
@@ -367,16 +343,6 @@ public class Tellur {
             }
         }
         alert = null;
-    }
-
-    public boolean waitForPageToLoad(int timeInSeconds) {
-        WebDriverWait wait = new WebDriverWait(webDriver,timeInSeconds);
-        try {
-            wait.until((ExpectedCondition<Boolean>) driver -> ((JavascriptExecutor)driver).executeScript("return document.readyState").equals("complete"));
-            return true;
-        } catch (TimeoutException e) {
-            return false;
-        }
     }
 
 }
