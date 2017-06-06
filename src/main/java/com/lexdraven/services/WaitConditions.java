@@ -7,10 +7,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.util.function.Function;
 
 public enum WaitConditions {
-    visible(ExpectedConditions::visibilityOfElementLocated),
-    exist(ExpectedConditions::presenceOfElementLocated),
-    clickable(ExpectedConditions::elementToBeClickable),
-    invisible(ExpectedConditions::invisibilityOfElementLocated);
+    visible   (ExpectedConditions::visibilityOfElementLocated),
+    exist     (ExpectedConditions::presenceOfElementLocated),
+    clickable (ExpectedConditions::elementToBeClickable),
+    invisible (ExpectedConditions::invisibilityOfElementLocated);
 
     WaitConditions(Function<By, ExpectedCondition<?>> type) {
         this.type = type;
@@ -21,5 +21,4 @@ public enum WaitConditions {
     }
 
     private final Function<By, ExpectedCondition<?>> type;
-
 }

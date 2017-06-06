@@ -29,33 +29,38 @@ public class BrowserDriverKeeper {
     }
 
     private WebDriver getDriverByType(String browserType) {
-        if (browserType.equals("ie")) {
-            System.setProperty("webdriver.ie.driver", System.getProperty("user.dir") + "/vendors/IEDriverServer.exe");
-            webDriver = new InternetExplorerDriver();
-        }
+        ChromeOptions options;
         if (browserType.contains("chrome")) {
             System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "/vendors/chromedriver.exe");
-            if (browserType.startsWith("mobile")) {
-                ChromeOptions options = new ChromeOptions();
+        }
+        switch (browserType) {
+            case "ie":
+                System.setProperty("webdriver.ie.driver", System.getProperty("user.dir") + "/vendors/IEDriverServer.exe");
+                return new InternetExplorerDriver();
+            case "firefox":
+                System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + "/vendors/geckodriver.exe");
+                return new FirefoxDriver();
+            case "html":
+                return new HtmlUnitDriver(false);
+            case "chrome":
+                return new ChromeDriver();
+            case "mobile chrome":
+                options = new ChromeOptions();
                 options.addArguments("--no-sandbox");
                 Map<String, String> mobileEmulation = new HashMap<>();
                 mobileEmulation.put("deviceName", "Apple iPhone 5");
                 options.setExperimentalOption("mobileEmulation", mobileEmulation);
                 DesiredCapabilities capabilities = DesiredCapabilities.chrome();
                 capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-                webDriver = new ChromeDriver(capabilities);
-            } else {
-                webDriver = new ChromeDriver();
-            }
+                return new ChromeDriver(capabilities);
+            case "headless chrome":
+                options = new ChromeOptions();
+                options.addArguments("--headless");
+                options.addArguments("window-size=1800x900");
+                return new ChromeDriver(options);
+            default:
+                return new ChromeDriver();
         }
-        if (browserType.equals("firefox")) {
-            System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + "/vendors/geckodriver.exe");
-            webDriver = new FirefoxDriver();
-        }
-        if (browserType.equals("html")) {
-            webDriver = new HtmlUnitDriver(false);
-        }
-        return webDriver;
     }
 
     public int getTimeToWait() {

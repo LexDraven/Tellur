@@ -7,12 +7,9 @@ import org.openqa.selenium.By;
  */
 public class start {
     public static void main(String[] args) {
-        Tellur tellur = new Tellur("firefox");
+        Tellur tellur = new Tellur("chrome");
         tellur.goToPage("https://google.com");
-        if (tellur.isJQueryOnThisPage()) {
-            tellur.waitForJQueryEnds();
-            System.out.println("ok");
-        }
+        tellur.waitForPageToLoad(5);
         tellur.typeTextToInput(By.xpath("//input[@title='Поиск']"),"firefox");
        // tellur.getElement(By.id("q")).submit();
         tellur.pause(2);

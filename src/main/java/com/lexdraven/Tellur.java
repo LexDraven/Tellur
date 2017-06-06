@@ -94,10 +94,10 @@ public class Tellur {
         return webDriver.findElement(locator);
     }
 
-    public boolean isElementPresent(By locator) { //проверка наличия элемента быстрый и без исключений
-        webDriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS); //ставим 0 для быстроты поиска
+    public boolean isElementPresent(By locator) {
+        webDriver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         List<WebElement> allElementsByLocator = getListByLocator(locator);
-        webDriver.manage().timeouts().implicitlyWait(timeToWait, TimeUnit.SECONDS); //возвращаем нужное время
+        webDriver.manage().timeouts().implicitlyWait(timeToWait, TimeUnit.SECONDS);
         return allElementsByLocator.size() > 0;
     }
 
