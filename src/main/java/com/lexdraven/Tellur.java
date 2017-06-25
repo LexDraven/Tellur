@@ -345,4 +345,11 @@ public class Tellur {
         alert = null;
     }
 
+    public void setSize(int x, int y) {
+        webDriver.manage().window().setSize(new Dimension(x,y));
+    }
+
+    public void setPosition(int x, int y) {
+       webDriver.manage().window().setPosition(new Point(x,y));
+    }
 }
